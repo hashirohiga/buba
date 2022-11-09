@@ -1,0 +1,78 @@
+private List<Agent> ItemPage(List<Agent> agents)
+        {
+            if (agents.Count > 10)
+            {
+                CountPage = Convert.ToInt32(Math.Ceiling((decimal)agents.Count / 10));
+                int startItem = SelectedPage * 10 - 10;
+                int endItem = SelectedPage * 10;
+
+                List<Agent> list = new();
+                for (; startItem < endItem && startItem <= agents.Count; startItem++)
+                {
+                    list.Add(agents[startItem]);
+                }
+                CreateNumberPage();
+                return list;
+            }
+            else
+            {
+                return agents;
+            }
+        }
+
+        private void CreateNumberPage()
+        {
+            mainWindow.stackPanel.Children.Clear();
+
+            TextBlock textBlockLeft = new();
+            textBlockLeft.Text = "<";
+            textBlockLeft.FontSize = 15;
+            textBlockLeft.Margin = new Thickness(0, 0, 5, 0);
+            textBlockLeft.MouseDown += TextBlockLeft_MouseDown;
+            mainWindow.stackPanel.Children.Add(textBlockLeft);
+
+
+            for (int i = 1; i <= CountPage; i++)
+            {
+                TextBlock textBlockPage = new();
+                textBlockPage.Text = Convert.ToString(i);
+                textBlockPage.FontSize = 15;
+                textBlockPage.Margin = new Thickness(0, 0, 5, 0);
+                textBlockPage.MouseDown += TextBlockPage_MouseDown;
+                if (SelectedPage == i)
+                    textBlockPage.TextDecorations = TextDecorations.Underline;
+                mainWindow.stackPanel.Children.Add(textBlockPage);
+            }
+
+            TextBlock textBlockRigth = new();
+            textBlockRigth.Text = ">";
+            textBlockRigth.FontSize = 15;
+            textBlockRigth.Margin = new Thickness(0, 0, 5, 0);
+            textBlockRigth.MouseDown += TextBlockRigth_MouseDown;
+            mainWindow.stackPanel.Children.Add(textBlockRigth);
+        }
+
+        private void TextBlockLeft_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (SelectedPage - 1 > 0)
+            {
+                SelectedPage--;
+                DisplayAgents();
+            }
+        }
+
+        private void TextBlockPage_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            var textBlock = sender as TextBlock;
+            SelectedPage = Convert.ToInt32(textBlock.Text);
+            DisplayAgents();
+        }
+
+        private void TextBlockRigth_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (SelectedPage + 1 <= CountPage)
+            {
+                SelectedPage++;
+                DisplayAgents();
+            }
+        }
